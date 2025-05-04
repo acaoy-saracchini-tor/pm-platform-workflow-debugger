@@ -26,7 +26,7 @@ jobs:
 
       - name: Save concurrency group to an output
         id: save-concurrency
-        run: echo "CONCURRENCY_GROUP=${{ jobs.<job_id>.concurrency }}" >> $GITHUB_ENV
+        run: echo "CONCURRENCY_GROUP=${{ github.event.inputs.concurrency_group }}" >> $GITHUB_ENV
 
       - name: Show selected concurrency group
         run: |

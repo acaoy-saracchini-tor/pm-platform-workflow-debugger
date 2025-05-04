@@ -1,0 +1,35 @@
+name: Debugger Workflow
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  show-variables-and-concurrency:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show repository variables
+        run: |
+          echo "BRANCH_STG1: ${{ vars.BRANCH_STG1 }}"
+          echo "BRANCH_STG2: ${{ vars.BRANCH_STG2 }}"
+          echo "BRANCH_STG3: ${{ vars.BRANCH_STG3 }}"
+
+      - name: Determine concurrency group
+        id: concurrency
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          if [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG1 }}"* ]]; then
+            echo "group-STG1" > concurrency-group.txt
+          elif [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG2 }}"* || "$BRANCH_NAME" == patch* ]]; then
+            echo "group-STG2" > concurrency-group.txt
+          elif [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG3 }}"* || "$BRANCH_NAME" == "master" || "$BRANCH_NAME" == "main" ]]; then
+            echo "group-STG3" > concurrency-group.txt
+          else
+            echo "unknown-group" > concurrency-group.txt
+          fi
+          cat concurrency-group.txt
+
+      - name: Show selected concurrency group
+        run: |
+          echo "Selected Concurrency Group: $(cat concurrency-group.txt)"

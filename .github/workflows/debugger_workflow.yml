@@ -24,16 +24,15 @@ jobs:
           echo "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Save concurrency group to an output
-        id: save-concurrency
-        run: echo "CONCURRENCY_GROUP=${{ github.event.inputs.concurrency_group }}" >> $GITHUB_ENV
-
       - name: Show selected concurrency group
         run: |
-          echo "### Selected Concurrency Group - option 1" >> $GITHUB_STEP_SUMMARY
-          echo "Concurrency Group: ${{ env.CONCURRENCY_GROUP }}" >> $GITHUB_STEP_SUMMARY
-
-      - name: Use concurrency group in another step
-        run: |
           echo "### Selected Concurrency Group - option 2" >> $GITHUB_STEP_SUMMARY
-          echo "Concurrency Group: ${{ env.CONCURRENCY_GROUP }}" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG1) }}" == "true" ]]; then
+            echo "Concurrency Group: group-STG1" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG2) }}" == "true" || "${{ startsWith(github.ref_name, 'patch') }}" == "true" ]]; then
+            echo "Concurrency Group: group-STG2" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG3) }}" == "true" || "${{ github.ref_name }}" == "master" || "${{ github.ref_name }}" == "main" ]]; then
+            echo "Concurrency Group: group-STG3" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Concurrency Group: unknown-group" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -20,9 +20,9 @@ jobs:
       - name: Add repository variables to summary
         run: |
           echo "### Repository Variables Values" >> $GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG1: ${{ env.BRANCH_STG1 }}" >> $GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG2: ${{ env.BRANCH_STG2 }}" >> $GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG3: ${{ env.BRANCH_STG3 }}" >> $GITHUB_STEP_SUMMARY
+          echo "- BRANCH_STG1: ${{ vars.BRANCH_STG1 }}" >> $GITHUB_STEP_SUMMARY
+          echo "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $GITHUB_STEP_SUMMARY
+          echo "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Show selected concurrency group
         run: |

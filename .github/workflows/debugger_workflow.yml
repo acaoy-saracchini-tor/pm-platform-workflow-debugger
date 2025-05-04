@@ -26,13 +26,26 @@ jobs:
 
       - name: Save concurrency group to an output
         id: save-concurrency
-        run: echo "CONCURRENCY_GROUP=${{ github.workflow_concurrency }}" >> $GITHUB_ENV
+        run: echo "CONCURRENCY_GROUP=${{ steps.set-concurrency.outputs.group }}" >> $GITHUB_ENV
 
+      - name: Set concurrency group
+        id: set-concurrency
+        run: |
+          if [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG1) }}" == "true" ]]; then
+            echo "group-STG1" > group.txt
+          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG2) || startsWith(github.ref_name, 'patch') }}" == "true" ]]; then
+            echo "group-STG2" > group.txt
+          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG3) || github.ref_name == 'master' || github.ref_name == 'main' }}" == "true" ]]; then
+            echo "group-STG3" > group.txt
+          else
+            echo "unknown-group" > group.txt
+          fi
+          echo "::set-output name=group::$(cat group.txt)"
 
       - name: Show selected concurrency group
         run: |
           echo "### Selected Concurrency Group - option 1" >> $GITHUB_STEP_SUMMARY
-          echo "Concurrency Group: ${{ github.workflow_concurrency }}" >> $GITHUB_STEP_SUMMARY
+          echo "Concurrency Group: ${{ env.CONCURRENCY_GROUP }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Use concurrency group in another step
         run: |

@@ -5,38 +5,26 @@ on:
     branches:
       - '**'
 
+concurrency: 
+  group: ${{ 
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'group-STG1' || 
+    (startsWith(github.ref_name, vars.BRANCH_STG2) || startsWith(github.ref_name, 'patch')) && 'group-STG2' || 
+    (startsWith(github.ref_name, vars.BRANCH_STG3) || github.ref_name == 'master' || github.ref_name == 'main') && 'group-STG3' || 
+    'unknown-group' 
+    }}
+
 jobs:
   show-variables-and-concurrency:
     runs-on: ubuntu-latest
     steps:
-      - name: Set repository variables for summary
-        run: |
-          echo "BRANCH_STG1=${{ vars.BRANCH_STG1 }}" >> $GITHUB_ENV
-          echo "BRANCH_STG2=${{ vars.BRANCH_STG2 }}" >> $GITHUB_ENV
-          echo "BRANCH_STG3=${{ vars.BRANCH_STG3 }}" >> $GITHUB_ENV
-
       - name: Add repository variables to summary
         run: |
-          echo "### Repository Variables" >> $GITHUB_STEP_SUMMARY
+          echo "### Repository Variables Values" >> $GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG1: ${{ env.BRANCH_STG1 }}" >> $GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG2: ${{ env.BRANCH_STG2 }}" >> $GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG3: ${{ env.BRANCH_STG3 }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Determine concurrency group
-        id: concurrency
-        run: |
-          BRANCH_NAME="${{ github.ref_name }}"
-          if [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG1 }}"* ]]; then
-            echo "group-STG1" > concurrency-group.txt
-          elif [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG2 }}"* || "$BRANCH_NAME" == patch* ]]; then
-            echo "group-STG2" > concurrency-group.txt
-          elif [[ "$BRANCH_NAME" == "${{ vars.BRANCH_STG3 }}"* || "$BRANCH_NAME" == "master" || "$BRANCH_NAME" == "main" ]]; then
-            echo "group-STG3" > concurrency-group.txt
-          else
-            echo "unknown-group" > concurrency-group.txt
-          fi
-          cat concurrency-group.txt
-
       - name: Show selected concurrency group
         run: |
-          echo "Selected Concurrency Group: $(cat concurrency-group.txt)"
+          echo "### Selected Concurrency Group" >> $GITHUB_STEP_SUMMARY
+          echo "Selected Concurrency Group: ${{ github.workflow_concurrency }}" >> $GITHUB_STEP_SUMMARY

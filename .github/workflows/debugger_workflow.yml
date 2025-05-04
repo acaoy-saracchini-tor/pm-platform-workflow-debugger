@@ -26,21 +26,7 @@ jobs:
 
       - name: Save concurrency group to an output
         id: save-concurrency
-        run: echo "CONCURRENCY_GROUP=${{ steps.set-concurrency.outputs.group }}" >> $GITHUB_ENV
-
-      - name: Set concurrency group
-        id: set-concurrency
-        run: |
-          if [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG1) }}" == "true" ]]; then
-            echo "group-STG1" > group.txt
-          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG2) || startsWith(github.ref_name, 'patch') }}" == "true" ]]; then
-            echo "group-STG2" > group.txt
-          elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG3) || github.ref_name == 'master' || github.ref_name == 'main' }}" == "true" ]]; then
-            echo "group-STG3" > group.txt
-          else
-            echo "unknown-group" > group.txt
-          fi
-          echo "::set-output name=group::$(cat group.txt)"
+        run: echo "CONCURRENCY_GROUP=${{ jobs.<job_id>.concurrency }}" >> $GITHUB_ENV
 
       - name: Show selected concurrency group
         run: |

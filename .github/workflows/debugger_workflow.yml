@@ -7,25 +7,25 @@ on:
 
 env:
   ENVIRONMENT_NAME: ${{
-    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
-    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' ||
-    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' ||
+    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' ||
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
     }}
 
 concurrency: 
   group: group-${{ 
-    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' || 
-    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' || 
-    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' || 
+    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' || 
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
     }}
 
 jobs:
   show-variables-and-concurrency:
     runs-on: ubuntu-latest
     environment: ${{
-      startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
-      startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' ||
-      startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
+      startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' ||
+      startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' ||
+      startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
       }}
     steps:
       - name: Add repository variables to summary
@@ -37,7 +37,7 @@ jobs:
 
       - name: Validate Environment Variable 
         run: |
-          if [[ "${{ env.ENVIRONMENT_NAME }}" != "STG1" && "${{ env.ENVIRONMENT_NAME }}" != "STG2" && "${{ env.ENVIRONMENT_NAME }}" != "STG3" ]]; then
+          if [[ "${{ env.ENVIRONMENT_NAME }}" != "STG-1" && "${{ env.ENVIRONMENT_NAME }}" != "STG-2" && "${{ env.ENVIRONMENT_NAME }}" != "STG-3" ]]; then
             echo "### Error setting environment :x:" >> $GITHUB_STEP_SUMMARY
             echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge." >> $GITHUB_STEP_SUMMARY
           exit 1

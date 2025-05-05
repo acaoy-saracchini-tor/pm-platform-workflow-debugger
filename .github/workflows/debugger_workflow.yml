@@ -34,7 +34,7 @@ jobs:
         run: |
           if [[ "${{ env.ENVIRONMENT_NAME }}" != "STG1" && "${{ env.ENVIRONMENT_NAME }}" != "STG2" && "${{ env.ENVIRONMENT_NAME }}" != "STG3" ]]; then
             echo "### Error setting environment :x:" >> $GITHUB_STEP_SUMMARY
-            echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge. :E" >> $GITHUB_STEP_SUMMARY
+            echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge." >> $GITHUB_STEP_SUMMARY
           exit 1
           fi
 
@@ -42,6 +42,3 @@ jobs:
         run: |
           echo "### Environment" >> $GITHUB_STEP_SUMMARY
           echo "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $GITHUB_STEP_SUMMARY
-
-
-# A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge.

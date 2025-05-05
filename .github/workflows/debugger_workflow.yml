@@ -22,6 +22,7 @@ concurrency:
 jobs:
   show-variables-and-concurrency:
     runs-on: ubuntu-latest
+    environment: ${{ env.ENVIRONMENT_NAME }}
     steps:
       - name: Add repository variables to summary
         run: |

@@ -29,11 +29,12 @@ jobs:
       }}
     steps:
       - name: Add repository variables to summary
+        shell: powershell
         run: |
-          echo "### Repository Variables Values" >> $env:GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG1: ${{ vars.BRANCH_STG1 }}" >> $env:GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $env:GITHUB_STEP_SUMMARY
-          echo "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $env:GITHUB_STEP_SUMMARY
+          "### Repository Variables Values" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG1: ${{ vars.BRANCH_STG1 }}" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $env:GITHUB_STEP_SUMMARY
 
       - name: Validate Environment Variable
         shell: powershell
@@ -45,6 +46,7 @@ jobs:
           }
 
       - name: Show Environment
+        shell: powershell
         run: |
-          echo "### Environment" >> $env:GITHUB_STEP_SUMMARY
-          echo "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $env:GITHUB_STEP_SUMMARY
+          "### Environment" >> $env:GITHUB_STEP_SUMMARY
+          "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $env:GITHUB_STEP_SUMMARY

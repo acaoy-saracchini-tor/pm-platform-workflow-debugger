@@ -13,10 +13,11 @@ env:
     }}
 
 concurrency: 
-  group: ${{ 
+  group: group-${{ 
     startsWith(github.ref_name, vars.BRANCH_STG1) && 'group-STG1' || 
     startsWith(github.ref_name, vars.BRANCH_STG2) && 'group-STG2' || 
-    startsWith(github.ref_name, vars.BRANCH_STG3) && 'group-STG3'
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'group-STG3' ||
+    group-unknown
     }}
 
 jobs:

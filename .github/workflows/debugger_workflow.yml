@@ -22,7 +22,11 @@ concurrency:
 jobs:
   show-variables-and-concurrency:
     runs-on: ubuntu-latest
-    environment: test_environment_info
+    environment: ${{
+      startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
+      startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' ||
+      startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
+      }}
     steps:
       - name: Add repository variables to summary
         run: |

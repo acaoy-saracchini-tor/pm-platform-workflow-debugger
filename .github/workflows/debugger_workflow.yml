@@ -5,6 +5,9 @@ on:
     branches:
       - '**'
 
+env:
+  ENVIRONMENT_NAME: 'Test Environment'
+
 concurrency: 
   group: ${{ 
     startsWith(github.ref_name, vars.BRANCH_STG1) && 'group-STG1' || 
@@ -26,7 +29,7 @@ jobs:
 
       - name: Show selected concurrency group
         run: |
-          echo "### Selected Concurrency Group - option 2" >> $GITHUB_STEP_SUMMARY
+          echo "### Selected Concurrency Group" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG1) }}" == "true" ]]; then
             echo "Concurrency Group: group-STG1" >> $GITHUB_STEP_SUMMARY
           elif [[ "${{ startsWith(github.ref_name, vars.BRANCH_STG2) }}" == "true" || "${{ startsWith(github.ref_name, 'patch') }}" == "true" ]]; then
@@ -36,4 +39,10 @@ jobs:
           else
             echo "Concurrency Group: unknown-group" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Show env variables
+        run: |
+          echo "### Environment Variables" >> $GITHUB_STEP_SUMMARY
+          echo "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $GITHUB_STEP_SUMMARY
+
 

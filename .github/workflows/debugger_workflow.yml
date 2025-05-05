@@ -6,7 +6,7 @@ on:
       - '**'
 
 env:
-  ENVIRONMENT_NAME: 'Test Environment'
+  ENVIRONMENT_NAME: ${{ startsWith(github.ref_name, vars.BRANCH_STG1) && 'group-STG1' }}
 
 concurrency: 
   group: ${{ 

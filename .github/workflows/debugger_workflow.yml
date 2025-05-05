@@ -6,13 +6,18 @@ on:
       - '**'
 
 env:
-  ENVIRONMENT_NAME: ${{ startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
+  ENVIRONMENT_NAME: ${{
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
     startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' ||
     startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
     }}
 
 concurrency: 
-  group: group-$ENVIRONMENT_NAME >> $GITHUB_STE_SUMMARY
+  group: ${{ 
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'group-STG1' || 
+    startsWith(github.ref_name, vars.BRANCH_STG2) && 'group-STG2' || 
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'group-STG3'
+    }}
 
 jobs:
   show-variables-and-concurrency:

@@ -8,7 +8,7 @@ on:
 env:
   ENVIRONMENT_NAME: ${{ startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG1' ||
     startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG2' ||
-    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3' ||
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG3'
     }}
 
 concurrency: 

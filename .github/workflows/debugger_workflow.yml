@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   show-variables-and-concurrency:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest   
     environment: ${{
       startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' ||
       startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' ||

@@ -38,11 +38,7 @@ jobs:
       - name: Validate Environment Variable
         shell: powershell
         run: |
-          if (
-            -not ($env:ENVIRONMENT_NAME -eq "STG-1"
-            -or $env:ENVIRONMENT_NAME -eq "STG-2" 
-            -or $env:ENVIRONMENT_NAME -eq "STG-3")
-          ){
+          if (-not ($env:ENVIRONMENT_NAME -eq "STG-1" -or $env:ENVIRONMENT_NAME -eq "STG-2" -or $env:ENVIRONMENT_NAME -eq "STG-3")) {
             Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Error setting environment :x:"
             Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge."
             exit 1

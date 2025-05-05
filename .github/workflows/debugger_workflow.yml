@@ -35,13 +35,18 @@ jobs:
           echo "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $env:GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $env:GITHUB_STEP_SUMMARY
 
-      - name: Validate Environment Variable 
+      - name: Validate Environment Variable
+        shell: powershell
         run: |
-          if [[ "${{ env.ENVIRONMENT_NAME }}" != "STG-1" && "${{ env.ENVIRONMENT_NAME }}" != "STG-2" && "${{ env.ENVIRONMENT_NAME }}" != "STG-3" ]]; then
-            echo "### Error setting environment :x:" >> $env:GITHUB_STEP_SUMMARY
-            echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge." >> $env:GITHUB_STEP_SUMMARY
+          if (
+            -not ($env:ENVIRONMENT_NAME -eq "STG-1"
+            -or $env:ENVIRONMENT_NAME -eq "STG-2" 
+            -or $env:ENVIRONMENT_NAME -eq "STG-3")
+          ){
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Error setting environment :x:"
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge."
             exit 1
-          fi
+          }
 
       - name: Show Environment
         run: |

@@ -30,10 +30,11 @@ jobs:
           echo "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $GITHUB_STEP_SUMMARY
           echo "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $GITHUB_STEP_SUMMARY
 
-      - name: Validate Environment Variable
+      - name: Validate Environment Variable 
         run: |
           if [[ "${{ env.ENVIRONMENT_NAME }}" != "STG1" && "${{ env.ENVIRONMENT_NAME }}" != "STG2" && "${{ env.ENVIRONMENT_NAME }}" != "STG3" ]]; then
-            echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge." >> $GITHUB_STEP_SUMMARY
+            echo "### Error setting environment :x:" >> $GITHUB_STEP_SUMMARY
+            echo "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge. :E" >> $GITHUB_STEP_SUMMARY
           exit 1
           fi
 

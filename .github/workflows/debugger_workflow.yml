@@ -12,7 +12,7 @@ env:
     }}
 
 concurrency: 
-  group: group-$ENVIRONMENT_NAME
+  group: group-$ENVIRONMENT_NAME >> $GITHUB_STE_SUMMARY
 
 jobs:
   show-variables-and-concurrency:

@@ -104,7 +104,6 @@ jobs:
   postprocessing-dataload:
     name: Run Post Processing Dataload
     needs: daytime-dataload
-    needs: preparation
     runs-on:
       group: pmx-group
     environment: ${{

@@ -57,7 +57,7 @@ jobs:
         run: |
           echo '---' >> $GITHUB_STEP_SUMMARY
           echo '## Run Regression Comparison for Daytime Firms' >> $GITHUB_STEP_SUMMARY
-          cd C:\Users\pmx_asaracchini\Documents\Git\pm-platform-devops\Automated-Databuild
+          cd C:\temp\Automated-Databuild
           
           $firms = '${{ vars.DAYTIME_FIRMS_TO_RUN }}'.Split(',')
           foreach ($firm in $firms) {

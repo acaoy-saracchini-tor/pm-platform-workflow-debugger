@@ -57,9 +57,11 @@ jobs:
         run: |
           echo '---' >> $GITHUB_STEP_SUMMARY
           echo '## Run Regression Comparison for Daytime Firms' >> $GITHUB_STEP_SUMMARY
+          cd C:\Users\pmx_asaracchini\Documents\Git\pm-platform-devops\Automated-Databuild
+          
           $firms = '${{ vars.DAYTIME_FIRMS_TO_RUN }}'.Split(',')
           foreach ($firm in $firms) {
-            $output = .\C:\Users\pmx_asaracchini\Documents\Git\pm-platform-devops\Automated-Databuild\ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}"
+            $output = .\ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}"
             echo "### Firm $firm Result:" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo "$output" >> $GITHUB_STEP_SUMMARY

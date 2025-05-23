@@ -5,11 +5,9 @@ name: Continuous End To End Testing
 
 # Run the workflow when the Continuous Delivery workflow completes.
 on:
-  workflow_dispatch:
-    inputs:
-      parameters_json:
-        description: List of Parameters needed in the subsequent workflow passed as Json
-        type: string
+  push:
+    branches:
+      - '**'
   
 # Concurrency can't use environment variables.
 concurrency:
@@ -35,8 +33,7 @@ jobs:
 
   preparation:
     name: Prepare By Making Environment Variables Global
-    runs-on:
-      group: pmx-group
+    runs-on: self-hosted
     environment: ${{
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG1) && 'STG-1' ||
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG2) && 'STG-2' ||
@@ -74,8 +71,7 @@ jobs:
   daytime-dataload:
     name: Run Daytime Databuild
     needs: preparation
-    runs-on:
-      group: pmx-group
+    runs-on: self-hosted
     environment: ${{
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG1) && 'STG-1' ||
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG2) && 'STG-2' ||
@@ -104,8 +100,7 @@ jobs:
   postprocessing-dataload:
     name: Run Post Processing Dataload
     needs: daytime-dataload
-    runs-on:
-      group: pmx-group
+    runs-on: self-hosted
     environment: ${{
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG1) && 'STG-1' ||
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG2) && 'STG-2' ||
@@ -160,8 +155,7 @@ jobs:
     name: Validate Data Build
     needs: daytime-dataload
     if: ${{ needs.preparation.outputs.validation_enabled=='true' }}
-    runs-on:
-      group: pmx-group
+    runs-on: self-hosted
     environment: ${{
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG1) && 'STG-1' ||
       startsWith(fromJSON(github.event.inputs.parameters_json).source_branch, vars.BRANCH_STG2) && 'STG-2' ||

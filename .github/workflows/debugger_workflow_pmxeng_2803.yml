@@ -1,0 +1,67 @@
+name: Debugger Workflow
+
+on:
+  push:
+    branches:
+      - '**'
+
+env:
+  ENVIRONMENT_NAME: ${{
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' ||
+    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' ||
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
+    }}
+
+concurrency: 
+  group: group-${{ 
+    startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' || 
+    startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' || 
+    startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
+    }}
+
+jobs:
+  show-variables-and-concurrency:
+    runs-on: self-hosted
+    environment: ${{
+      startsWith(github.ref_name, vars.BRANCH_STG1) && 'STG-1' ||
+      startsWith(github.ref_name, vars.BRANCH_STG2) && 'STG-2' ||
+      startsWith(github.ref_name, vars.BRANCH_STG3) && 'STG-3'
+      }}
+    steps:
+      - name: Add repository variables to summary
+        shell: powershell
+        run: |
+          "### Repository Variables Values" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG1: ${{ vars.BRANCH_STG1 }}" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG2: ${{ vars.BRANCH_STG2 }}" >> $env:GITHUB_STEP_SUMMARY
+          "- BRANCH_STG3: ${{ vars.BRANCH_STG3 }}" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Validate Environment Variable
+        shell: powershell
+        run: |
+          if (-not ($env:ENVIRONMENT_NAME -eq "STG-1" -or $env:ENVIRONMENT_NAME -eq "STG-2" -or $env:ENVIRONMENT_NAME -eq "STG-3")) {
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "### Error setting environment :x:"
+            Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "A branch that is being used is not being targeted to any environment: Update the BRANCH_STGX repository variable that best applies to this merge."
+            exit 1
+          }
+
+      - name: Show Environment
+        shell: powershell
+        run: |
+          "### Environment" >> $env:GITHUB_STEP_SUMMARY
+          "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $env:GITHUB_STEP_SUMMARY
+
+      # Step to Run Regression Comparison for Daytime Firms
+      - name: Run Regression Comparison for Daytime Firms
+        shell: pwsh
+        run: |
+          echo '---' >> $GITHUB_STEP_SUMMARY
+          echo '## Run Regression Comparison for Daytime Firms' >> $GITHUB_STEP_SUMMARY
+          $firms = '${{ vars.DAYTIME_FIRMS_TO_RUN }}'.Split(',')
+          foreach ($firm in $firms) {
+            $output = ./devops-repo/Automated-Databuild/ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}"
+            echo "### Firm $firm Result:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$output" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          }

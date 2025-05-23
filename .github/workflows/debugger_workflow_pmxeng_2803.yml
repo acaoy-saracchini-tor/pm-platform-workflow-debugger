@@ -64,7 +64,7 @@ jobs:
           foreach ($firm in $firms) {
             $output = .\ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}" -verbose 4>&1
             echo $output
-            echo $FirmResultTitle = "### Firm $firm Result: "
+            $FirmResultTitle = "### Firm $firm Result: "
 
             if ($output -match "passes the success threshold") {
               $FirmResultTitlePlusStatus = $FirmResultTitle + ":white_check_mark: Passed" 

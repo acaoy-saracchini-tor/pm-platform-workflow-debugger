@@ -60,6 +60,7 @@ jobs:
           cd C:\temp\Automated-Databuild
           Install-Module -Name SqlServer -Force
           
+          $jobFailed = $false
           $firms = '${{ vars.DAYTIME_FIRMS_TO_RUN }}'.Split(',')
           foreach ($firm in $firms) {
             $output = .\ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}" -verbose 4>&1
@@ -76,4 +77,13 @@ jobs:
             echo '```' >> $env:GITHUB_STEP_SUMMARY
             echo "$output" >> $env:GITHUB_STEP_SUMMARY
             echo '```' >> $env:GITHUB_STEP_SUMMARY
+
+            if ($FirmResultTitlePlusStatus -match "Failed") {
+              $jobFailed = $true
+            }
+
+          }
+
+          if ($jobFailed) {
+            exit 1
           }

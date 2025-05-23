@@ -51,6 +51,14 @@ jobs:
           "### Environment" >> $env:GITHUB_STEP_SUMMARY
           "ENVIRONMENT_NAME: ${{ env.ENVIRONMENT_NAME }}" >> $env:GITHUB_STEP_SUMMARY
 
+      # Step to checkout DevOps repository source code from GitHub into the runner.
+      - name: Checkout DevOps Repository Source Code
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.DEVOPS_REPO }}
+          token: ${{ secrets.DEVOPS_REPO_PAT }}
+          path: ./devops-repo
+
       # Step to Run Regression Comparison for Daytime Firms
       - name: Run Regression Comparison for Daytime Firms
         shell: pwsh

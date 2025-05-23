@@ -58,6 +58,7 @@ jobs:
           echo '---' >> $GITHUB_STEP_SUMMARY
           echo '## Run Regression Comparison for Daytime Firms' >> $GITHUB_STEP_SUMMARY
           cd C:\temp\Automated-Databuild
+          Install-Module -Name SqlServer -Force
           
           $firms = '${{ vars.DAYTIME_FIRMS_TO_RUN }}'.Split(',')
           foreach ($firm in $firms) {

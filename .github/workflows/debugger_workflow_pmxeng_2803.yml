@@ -64,7 +64,14 @@ jobs:
           foreach ($firm in $firms) {
             $output = .\ExecuteSQL.ps1 -sqlusername ${{ secrets.DEVOPS_SQL_DEPLOYACCT }} -sqlpassword ${{ secrets.DEVOPS_SQL_DEPLOYACCT_PAT }} -serverInstance '${{ vars.DATABASE_SERVER }}' -database "Blazon" -query "EXECUTE Test.usp_BuildRegression @idFirm = $firm, @successThreshold = ${{ vars.REGRESSION_THRESHOLD }}" -verbose 4>&1
             echo $output
-            echo "### Firm $firm Result:" >> $env:GITHUB_STEP_SUMMARY
+            echo $FirmResultTitle = "### Firm $firm Result: "
+
+            if ($output -match "passes the success threshold") {
+              echo $FirmResultTitle + ":white_check_mark: Passed" >> $env:GITHUB_STEP_SUMMARY
+            } elseif ($output -match "failed based on the success threshold") {
+              echo $FirmResultTitle + ":exclamation: Failed" >> $env:GITHUB_STEP_SUMMARY
+            }
+
             echo '```' >> $env:GITHUB_STEP_SUMMARY
             echo "$output" >> $env:GITHUB_STEP_SUMMARY
             echo '```' >> $env:GITHUB_STEP_SUMMARY

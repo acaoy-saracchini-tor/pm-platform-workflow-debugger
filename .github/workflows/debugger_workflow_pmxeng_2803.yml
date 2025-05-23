@@ -67,11 +67,12 @@ jobs:
             echo $FirmResultTitle = "### Firm $firm Result: "
 
             if ($output -match "passes the success threshold") {
-              echo $FirmResultTitle + ":white_check_mark: Passed" >> $env:GITHUB_STEP_SUMMARY
+              $FirmResultTitlePlusStatus = $FirmResultTitle + ":white_check_mark: Passed" 
             } elseif ($output -match "failed based on the success threshold") {
-              echo $FirmResultTitle + ":exclamation: Failed" >> $env:GITHUB_STEP_SUMMARY
+              $FirmResultTitlePlusStatus = $FirmResultTitle + ":exclamation: Failed"
             }
 
+            echo $FirmResultTitlePlusStatus >> $env:GITHUB_STEP_SUMMARY
             echo '```' >> $env:GITHUB_STEP_SUMMARY
             echo "$output" >> $env:GITHUB_STEP_SUMMARY
             echo '```' >> $env:GITHUB_STEP_SUMMARY
